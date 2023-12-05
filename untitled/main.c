@@ -23,14 +23,17 @@ void changeCwd(char param1[]){
 void execCommand(char userInput[]){
     char* argv[100] = {};
     char*token;
+    char* dupe = strdup(userInput);
     char* ifBin = strtok(userInput, "/");
-    printf(" ifBin: %s", ifBin);
+    char *inBin = "/bin/";
+    printf("ifBin: %s\n", ifBin);
     if (strcmp(ifBin, "bin") == 0){
         int i = 0;
-        token = strtok(userInput, " ");
+        printf("User input: %s\n",userInput);
+        token = strtok(dupe, " ");
 
         while (token != NULL) {
-            printf("UI: %s, Token: %s, Index : %d\n", userInput,token,i);
+            printf("UI: %s, Token: %s, Index : %d\n", dupe,token,i);
             // Pass NULL to get next token
             argv[i++] = token;
             token = strtok(NULL, " ");
@@ -43,10 +46,10 @@ void execCommand(char userInput[]){
     }
     else{
         int i = 0;
-        token = strtok(userInput, " ");
-
+        token = strtok(dupe, " ");
+        printf("IN ELSE\n");
         while (token != NULL) {
-            printf("UI: %s, Token: %s, Index : %d\n", userInput,token,i);
+            printf("UI: %s, Token: %s, Index : %d\n", dupe,token,i);
             // Pass NULL to get next token
             argv[i++] = token;
             token = strtok(NULL, " ");
@@ -54,8 +57,10 @@ void execCommand(char userInput[]){
         // add < 100 parameters validation
 
         char *envp[] = {NULL};
-        char *argv0 = strcat("/bin",argv[0]);
-        printf("exec: %d\n", execve(argv0, argv, envp));
+
+        strcat(inBin,argv[0]);
+        printf("%s",inBin);
+        printf("exec: %d\n", execve(inBin, argv, envp));
         exit(0);
     }
 }
