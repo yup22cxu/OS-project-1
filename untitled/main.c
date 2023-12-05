@@ -23,12 +23,11 @@ void changeCwd(char param1[]){
 void execCommand(char userInput[]){
     char* argv[100] = {};
     char*token;
-    int i;
-
+    int i = 0;
     token = strtok(userInput, " ");
 
     while (token != NULL) {
-        printf("Token: %s\n", token);
+        printf("UI: %s, Token: %s, Index : %d\n", userInput,token,i);
         // Pass NULL to get next token
         argv[i++] = token;
         token = strtok(NULL, " ");
@@ -36,18 +35,22 @@ void execCommand(char userInput[]){
     // add < 100 parameters validation
 
     char* envp[] = {NULL};
-    execve(argv[0], argv, envp);
+    printf("exec: %d\n", execve(argv[0], argv, envp));
     exit(0);
-
 }
 
 void processCommand(char userInput[]) {
+    int pid = getpid(); // parent pid
+    pid_t cpid = fork();
+    pid_t cppid = getppid(); // childs parent pid
 
-    int cpid = fork();
-    if (cpid == 0) {
+    printf("cpid: %d, cppid: %d, pid: %d\n",cpid, cppid, pid);
+    if (cppid == pid) {
         execCommand(userInput);
+        exit(1);
     }
-    wait(&cpid);
+    int status;
+    waitpid(cpid, &status,0);
 }
 
 int main() {
@@ -56,9 +59,11 @@ int main() {
 
     do {
         printf(">>>");
+
         fgets(userInput,1000,stdin);
 
         size_t newline_pos = strcspn(userInput, "\n");
+        printf("Newline pos: %d\n", newline_pos);
         userInput[newline_pos] = '\0';
         // check if exit first
         if (strcmp("exit",userInput) == 0) {
@@ -66,7 +71,7 @@ int main() {
         }
         else {
         // check cd
-        
+
 
             processCommand(userInput);
         }
