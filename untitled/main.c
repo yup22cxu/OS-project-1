@@ -23,20 +23,41 @@ void changeCwd(char param1[]){
 void execCommand(char userInput[]){
     char* argv[100] = {};
     char*token;
-    int i = 0;
-    token = strtok(userInput, " ");
+    char* ifBin = strtok(userInput, "/");
+    printf(" ifBin: %s", ifBin);
+    if (strcmp(ifBin, "bin") == 0){
+        int i = 0;
+        token = strtok(userInput, " ");
 
-    while (token != NULL) {
-        printf("UI: %s, Token: %s, Index : %d\n", userInput,token,i);
-        // Pass NULL to get next token
-        argv[i++] = token;
-        token = strtok(NULL, " ");
+        while (token != NULL) {
+            printf("UI: %s, Token: %s, Index : %d\n", userInput,token,i);
+            // Pass NULL to get next token
+            argv[i++] = token;
+            token = strtok(NULL, " ");
+        }
+        // add < 100 parameters validation
+
+        char *envp[] = {NULL};
+        printf("exec: %d\n", execve(argv[0], argv, envp));
+        exit(0);
     }
-    // add < 100 parameters validation
+    else{
+        int i = 0;
+        token = strtok(userInput, " ");
 
-    char* envp[] = {NULL};
-    printf("exec: %d\n", execve(argv[0], argv, envp));
-    exit(0);
+        while (token != NULL) {
+            printf("UI: %s, Token: %s, Index : %d\n", userInput,token,i);
+            // Pass NULL to get next token
+            argv[i++] = token;
+            token = strtok(NULL, " ");
+        }
+        // add < 100 parameters validation
+
+        char *envp[] = {NULL};
+        char *argv0 = strcat("/bin",argv[0]);
+        printf("exec: %d\n", execve(argv0, argv, envp));
+        exit(0);
+    }
 }
 
 void processCommand(char userInput[]) {
