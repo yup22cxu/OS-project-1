@@ -25,44 +25,31 @@ void execCommand(char userInput[]){
     char*token;
     char* dupe = strdup(userInput);
     char* ifBin = strtok(userInput, "/");
-    char *inBin = "/bin/";
+    char inBin[1000] = {"/bin/"};
     printf("ifBin: %s\n", ifBin);
+    int i = 0;
+    printf("User input: %s\n",userInput);
+    token = strtok(dupe, " ");
+
+    while (token != NULL) {
+        printf("UI: %s, Token: %s, Index : %d\n", dupe,token,i);
+        // Pass NULL to get next token
+        argv[i++] = token;
+        token = strtok(NULL, " ");
+    }
+    char *envp[] = {NULL};
     if (strcmp(ifBin, "bin") == 0){
-        int i = 0;
-        printf("User input: %s\n",userInput);
-        token = strtok(dupe, " ");
-
-        while (token != NULL) {
-            printf("UI: %s, Token: %s, Index : %d\n", dupe,token,i);
-            // Pass NULL to get next token
-            argv[i++] = token;
-            token = strtok(NULL, " ");
-        }
-        // add < 100 parameters validation
-
-        char *envp[] = {NULL};
         printf("exec: %d\n", execve(argv[0], argv, envp));
         exit(0);
     }
-    else{
-        int i = 0;
-        token = strtok(dupe, " ");
-        printf("IN ELSE\n");
-        while (token != NULL) {
-            printf("UI: %s, Token: %s, Index : %d\n", dupe,token,i);
-            // Pass NULL to get next token
-            argv[i++] = token;
-            token = strtok(NULL, " ");
-        }
-        // add < 100 parameters validation
-
-        char *envp[] = {NULL};
-
+    else {
         strcat(inBin,argv[0]);
-        printf("%s",inBin);
         printf("exec: %d\n", execve(inBin, argv, envp));
         exit(0);
     }
+
+
+
 }
 
 void processCommand(char userInput[]) {
