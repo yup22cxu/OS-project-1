@@ -26,14 +26,14 @@ void execCommand(char userInput[]){
     int i;
 
     token = strtok(userInput, " ");
-    //processCommand(userInput);
+
     while (token != NULL) {
         printf("Token: %s\n", token);
         // Pass NULL to get next token
         argv[i++] = token;
         token = strtok(NULL, " ");
     }
-    // add less then 100 parameters validation
+    // add < 100 parameters validation
 
     char* envp[] = {NULL};
     execve(argv[0], argv, envp);
@@ -48,7 +48,37 @@ void processCommand(char userInput[]) {
         execCommand(userInput);
     }
     wait(&cpid);
-    char *command;
+}
+
+int main() {
+
+    char userInput[1000];// = "/bin/ls -al main.c";
+
+    do {
+        printf(">>>");
+        fgets(userInput,1000,stdin);
+
+        size_t newline_pos = strcspn(userInput, "\n");
+        userInput[newline_pos] = '\0';
+        // check if exit first
+        if (strcmp("exit",userInput) == 0) {
+            break;
+        }
+        else {
+        // check cd
+        
+
+            processCommand(userInput);
+        }
+    }
+    while (1 == 1);
+    printf("Successfully exited");
+
+}
+
+
+/*
+*    char *command;
     char *param1;
     //setcwd();
     //printf("this is the cwd %s\n", currentDirectory);
@@ -60,30 +90,5 @@ void processCommand(char userInput[]) {
         printf("we made it\n");
         changeCwd(param1);
     }
-}
 
-int main() {
-    char userInput[] = "/bin/ls -al main.c";
-    char exit[6] = "exit\n";
-    processCommand(userInput);
-      //  system("ls");
-    //system("cat main.c");
-    return 0;
-
-    do {
-        printf(">>>");
-        fgets(userInput,1000,stdin);
-
-        if (strcmp(exit,userInput) == 0) {
-            break;
-        }
-
-
-
-    }
-    while (1 == 1);
-    printf("Successfully exited");
-
-}
-
-
+ */
