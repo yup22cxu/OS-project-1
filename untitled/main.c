@@ -29,8 +29,25 @@ void execCommand(char *argv[]){
     char* ifBin = strtok(dupe2, "/");
     char inBin[1000] = {"/bin/"};
     printf("ifBin: %s\n", ifBin);
-
     char *envp[] = {NULL};
+    char *fullPath;
+    if (strcmp(ifBin, "bin") == 0){
+        fullPath = argv[0];
+    }
+    else{
+        fullPath = strcat(inBin,argv[0]);
+    }
+
+    if (access(fullPath, F_OK) == 0){
+        printf("exec with bin: %d \n", execve(fullPath,argv, envp));
+        exit(0);
+    }
+    else{
+        printf("Invalid command or command not found %s \n", fullPath);
+        exit(-1);
+    }
+
+
     if (strcmp(ifBin, "bin") == 0){
         printf("exec with bin: %d\n", execve(argv[0], argv, envp));
         exit(0);
