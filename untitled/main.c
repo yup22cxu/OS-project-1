@@ -102,16 +102,15 @@ int main() {
             argv[i++] = token;
             token = strtok(NULL, " ");
         }
-
-        if (strcmp(argv[0],"exit") == 0) {
-            break;
-        }
-        else if (strcmp(argv[0],"cd") == 0){
-        // check cd
-            changeCwd(argv);
-        }
-        else {
-            processCommand(argv);
+        if (argv[0] != NULL) {
+            if (strcmp(argv[0], "exit") == 0) {
+                break;
+            } else if (strcmp(argv[0], "cd") == 0) {
+                // check cd
+                changeCwd(argv);
+            } else {
+                processCommand(argv);
+            }
         }
     }
     while (1 == 1);
