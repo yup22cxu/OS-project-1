@@ -85,13 +85,16 @@ int main() {
             argv[i++] = token;
             token = strtok(NULL, " ");
         }
+
         if (strcmp(argv[0],"exit") == 0) {
             break;
         }
-        else{
+        else if (strcmp(argv[0],"cd") == 0){
         // check cd
-            processCommand(argv);
             changeCwd(argv);
+        }
+        else {
+            processCommand(argv);
         }
     }
     while (1 == 1);
