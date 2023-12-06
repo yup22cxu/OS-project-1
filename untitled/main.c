@@ -13,11 +13,14 @@ void setcwd(){
         if (getcwd(currentDirectory, sizeof(currentDirectory)) == NULL) {
             perror("getcwd() error");
         }
+        else{
+            printf("%s\n",currentDirectory);
+        }
 };
 
-void changeCwd(char param1[]){
-    printf("param 1 %s\n", param1);
-
+void changeCwd(char* pathTo[]){
+    chdir(pathTo);
+    setcwd();
 }
 
 void execCommand(char *argv[]){
@@ -87,27 +90,11 @@ int main() {
         }
         else{
         // check cd
-            execCommand(argv);
+            processCommand(argv);
+            changeCwd(argv);
         }
     }
     while (1 == 1);
     printf("Successfully exited");
 
 }
-
-
-/*
-*    char *command;
-    char *param1;
-    //setcwd();
-    //printf("this is the cwd %s\n", currentDirectory);
-    printf("%s\n", userInput);
-    command = strtok(userInput, " ");
-    param1 = strtok(NULL, " ");
-    printf("%s\n", command);
-    if (strcmp(command, "cd") == 0) {
-        printf("we made it\n");
-        changeCwd(param1);
-    }
-
- */
