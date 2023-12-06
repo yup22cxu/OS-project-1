@@ -20,31 +20,21 @@ void changeCwd(char param1[]){
 
 }
 
-void execCommand(char userInput[]){
-    char* argv[100] = {};
-    char*token;
-    char* dupe = strdup(userInput);
-    char* ifBin = strtok(userInput, "/");
+void execCommand(char *argv[]){
+
+    char* dupe2 = strdup(argv[0]);
+    char* ifBin = strtok(dupe2, "/");
     char inBin[1000] = {"/bin/"};
     printf("ifBin: %s\n", ifBin);
-    int i = 0;
-    printf("User input: %s\n",userInput);
-    token = strtok(dupe, " ");
 
-    while (token != NULL) {
-        printf("UI: %s, Token: %s, Index : %d\n", dupe,token,i);
-        // Pass NULL to get next token
-        argv[i++] = token;
-        token = strtok(NULL, " ");
-    }
     char *envp[] = {NULL};
     if (strcmp(ifBin, "bin") == 0){
-        printf("exec: %d\n", execve(argv[0], argv, envp));
+        printf("exec with bin: %d\n", execve(argv[0], argv, envp));
         exit(0);
     }
     else {
         strcat(inBin,argv[0]);
-        printf("exec: %d\n", execve(inBin, argv, envp));
+        printf("exec without bin: %d\n", execve(inBin, argv, envp));
         exit(0);
     }
 
@@ -52,14 +42,14 @@ void execCommand(char userInput[]){
 
 }
 
-void processCommand(char userInput[]) {
+void processCommand(char* argv[]) {
     int pid = getpid(); // parent pid
     pid_t cpid = fork();
     pid_t cppid = getppid(); // childs parent pid
 
     printf("cpid: %d, cppid: %d, pid: %d\n",cpid, cppid, pid);
     if (cppid == pid) {
-        execCommand(userInput);
+        execCommand(argv);
         exit(1);
     }
     int status;
@@ -79,14 +69,25 @@ int main() {
         printf("Newline pos: %d\n", newline_pos);
         userInput[newline_pos] = '\0';
         // check if exit first
-        if (strcmp("exit",userInput) == 0) {
+
+        char*token;
+        char* dupe = strdup(userInput);
+        char* argv[100] = {};
+        int i = 0;
+        token = strtok(dupe, " ");
+
+        while (token != NULL) {
+            printf("UI: %s, Token: %s, Index : %d\n", dupe,token,i);
+            // Pass NULL to get next token
+            argv[i++] = token;
+            token = strtok(NULL, " ");
+        }
+        if (strcmp(argv[0],"exit") == 0) {
             break;
         }
-        else {
+        else{
         // check cd
-
-
-            processCommand(userInput);
+            execCommand(argv);
         }
     }
     while (1 == 1);
